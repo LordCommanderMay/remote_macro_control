@@ -42,7 +42,5 @@ def main():
         sink_inputs_list.clear()
 
 
-
 if __name__ == '__main__':
     main()
-
