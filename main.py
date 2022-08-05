@@ -1,9 +1,7 @@
 import json
 import time
-
 import pulsectl
 import zmq
-
 from data_packet import create_packet
 from sinkinput import SinkInputs
 
@@ -31,9 +29,6 @@ def main():
                     packet = create_packet(sink_inputs_list)
                     socket.send(packet)
 
-
-
-
                 case "change_volume_input_sink":
                     for sink_input in sink_inputs_list:
                         if sink_input.sink_id == recv_data_packet["sink_id"]:
@@ -47,8 +42,7 @@ def main():
         sink_inputs_list.clear()
 
 
-# Press the green button in the gutter to run the script.
+
 if __name__ == '__main__':
     main()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
