@@ -43,6 +43,9 @@ class VolumeController:
     def change_input_volume(self, volume: float):
         self.OSVolumeController.change_input_volume(volume)
 
+    def get_input_sinks(self):
+        return self.OSVolumeController.input_sinks
+
 
 
 
