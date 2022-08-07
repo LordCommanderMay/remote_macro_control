@@ -4,7 +4,7 @@ from base import Base
 import enum
 
 
-class MACRO_TYPE(enum.Enum):
+class MacroType(enum.Enum):
     TERMINAL_COMMAND = 1
 
 
@@ -22,9 +22,9 @@ class Macro(Base):
         self.macro_type = macro_type
         self.command = command
 
-    def exacute(self):
+    def execute(self):
 
         match self.macro_type:
-            case MACRO_TYPE.TERMINAL_COMMAND:
+            case MacroType.TERMINAL_COMMAND:
                 process = subprocess.run(self.args, check=True)
 
