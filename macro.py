@@ -26,5 +26,5 @@ class Macro(Base):
 
         match self.macro_type:
             case MacroType.TERMINAL_COMMAND:
-                process = subprocess.run(self.args, check=True)
+                process = subprocess.run(self.command, check=True)
 
