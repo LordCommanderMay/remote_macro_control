@@ -1,4 +1,4 @@
-from sinkinput import SinkInputs
+from volume_control import SinkInputs
 import json
 
 

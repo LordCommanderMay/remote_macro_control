@@ -3,7 +3,7 @@ import time
 import pulsectl
 import zmq
 from data_packet import create_packet
-from sinkinput import SinkInputs
+from volume_control import SinkInputs
 
 
 def main():

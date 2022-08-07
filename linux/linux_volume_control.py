@@ -1,11 +1,5 @@
-import pulsectl
-import random
-
-ids : list[hex] = []
-
-
-class SinkInputs:
-    sink_id: bytes
+class SinkInput:
+    sink_id: int
     pulse_pointer: pulsectl.Pulse
     sink_input_obj: pulsectl.pulsectl.PulseSinkInputInfo
     app_name: str
@@ -62,3 +56,21 @@ class SinkInputs:
 
     def __repr__(self):
         return self.__str__()
+
+
+def get_master_output():
+    raise NotImplementedError()
+
+def get_main_inputs():
+    raise NotImplementedError
+
+
+def get_sink_inputs() -> list[SinkInput]:
+    sink_inputs_list: list[SinkInput] = []
+    with pulsectl.Pulse('volume-increase') as pulse:
+        print(pulse.server_info().default_sink_name)
+
+        for sink_input in pulse.sink_input_list():
+            sink_inputs_list.append(SinkInputs(pulse, sink_input))
+
+    return sink_inputs_list
