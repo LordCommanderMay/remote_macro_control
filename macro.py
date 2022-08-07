@@ -1,5 +1,6 @@
 import subprocess
 from sqlalchemy import Column, Integer, String, Enum
+
 from base import Base
 import enum
 
@@ -10,7 +11,7 @@ class MacroType(enum.Enum):
 
 class Macro(Base):
     __tablename__ = 'macros'
-    macro_id = Column(Integer, Primary_key=True)
+    macro_id = Column(Integer, primary_key=True)
     name = Column(String)
     icon = Column(String)
     macro_type = Column(Enum)
