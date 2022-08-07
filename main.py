@@ -17,7 +17,7 @@ def main():
     socket = context.socket(zmq.PAIR)
     socket.bind("tcp://*:5566")
     while True:
-        macros = session.query(macro.Macro)
+        macros = session.query(macro_.Macro)
         volume_controller = VolumeController()
         print(volume_controller.master_volume)
         message = socket.recv()
@@ -42,6 +42,10 @@ def main():
                 for sink_input in VolumeController.get_input_sinks():
                     if sink_input.sink_id == recv_data_packet["sink_id"]:
                         sink_input.toggle_mute()
+            case "run_macro":
+                for macro_ in macros:
+                    if recv_data_packet["macro_id"] == macro_.macro_id:
+                        macro_.execute()
         session.commit()
         session.close()
 
