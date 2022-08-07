@@ -17,7 +17,7 @@ def main():
     socket = context.socket(zmq.PAIR)
     socket.bind("tcp://*:5566")
     while True:
-        macros = session.query(macro_.Macro)
+        macros = session.query(macro.Macro)
         volume_controller = VolumeController()
         print(volume_controller.master_volume)
         message = socket.recv()

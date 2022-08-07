@@ -1,3 +1,4 @@
+import os
 import subprocess
 from sqlalchemy import Column, Integer, String, Enum
 
@@ -14,7 +15,7 @@ class Macro(Base):
     macro_id = Column(Integer, primary_key=True)
     name = Column(String)
     icon = Column(String)
-    macro_type = Column(Enum)
+    macro_type = Column(Enum(MacroType))
     command = Column(String)
 
     def __init__(self, name: str, icon: str, macro_type: enum.Enum, command: str):
@@ -27,5 +28,5 @@ class Macro(Base):
 
         match self.macro_type:
             case MacroType.TERMINAL_COMMAND:
-                process = subprocess.run(self.command, check=True)
+                os.system(self.command)
 

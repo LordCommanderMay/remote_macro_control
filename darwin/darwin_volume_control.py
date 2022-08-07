@@ -27,7 +27,7 @@ class DarwinVolumeController:
     def toggle_mute_master_volume(self):
         print(self.output_muted)
         if self.output_muted:
-            osascript.run("set volume without output muted")
+            osascript.run("set volume without output muted", background=True)
             self.master_volume = False
         else:
             osascript.run("set volume with output muted")
