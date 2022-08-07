@@ -1,5 +1,5 @@
 import platform
-
+import json
 
 class VolumeController:
 
@@ -46,6 +46,25 @@ class VolumeController:
     def get_input_sinks(self):
         return self.OSVolumeController.input_sinks
 
+    def get_volume_data_json(self):
+            packet = {
+                "action": 'sent_data',
+                "data": {
+                    "master_volume" :  self.master_volume,
+                    "output_muted" : self.output_muted,
+                    "input_volume" : self.input_volume,
+                    "input_muteed" : self.input_muted,
+                    "sink_inputs" : []
+
+                }
+            }
+            if platform.system() == "Darwin":
+                pass
+            else:
+                for sink_input in self.get_input_sinks():
+                    packet['data']['sink_inputs'].append(sink_input.to_dict())
+
+            return bytes(json.dumps(packet), 'utf-8')
 
 
 
@@ -54,6 +73,4 @@ class VolumeController:
 
 
 
-p = VolumeController()
-print(p.master_volume)
-print(p.input_volume)
+

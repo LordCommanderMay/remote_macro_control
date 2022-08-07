@@ -12,7 +12,7 @@ class DarwinVolumeController:
     def __init__(self):
         self.master_volume = float(osascript.run("output volume of(get volume settings)")[1])
         self.input_volume = float(osascript.run("input volume of (get volume settings)")[1])
-        self.output_muted = bool(osascript.run("output muted of (get volume settings)")[0])
+        self.output_muted = osascript.run("output muted of (get volume settings)")[1] == 'true'
         self.input_muted = False  # may cause a bug needs to be tested
 
     @staticmethod
@@ -24,6 +24,7 @@ class DarwinVolumeController:
         osascript.run(f"set volume input volume {volume}")
 
     def toggle_mute_master_volume(self):
+        print(self.output_muted)
         if self.output_muted:
             osascript.run("set volume without output muted")
             self.master_volume = False
