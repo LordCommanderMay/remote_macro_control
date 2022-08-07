@@ -2,6 +2,7 @@ import osascript
 
 
 class DarwinVolumeController:
+    """Volume Controls for mac os using apple scripts use by Volume Control class for darwin controllers"""
     master_volume: float
     input_volume: float
     output_muted: bool
@@ -33,6 +34,7 @@ class DarwinVolumeController:
             self.master_volume = True
 
     def toggle_input_mute(self):
+        #mac os does not have a good way of doing this
         raise NotImplementedError()
 
 
