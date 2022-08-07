@@ -1,3 +1,5 @@
+import pulsectl
+
 class SinkInput:
     sink_id: int
     pulse_pointer: pulsectl.Pulse
@@ -61,16 +63,28 @@ class SinkInput:
 def get_master_output():
     raise NotImplementedError()
 
+
 def get_main_inputs():
     raise NotImplementedError
 
 
-def get_sink_inputs() -> list[SinkInput]:
+def get_sink_inputs(pulse : pulsectl.Pulse) -> list[SinkInput]:
     sink_inputs_list: list[SinkInput] = []
-    with pulsectl.Pulse('volume-increase') as pulse:
-        print(pulse.server_info().default_sink_name)
+    print(pulse.server_info().default_sink_name)
 
-        for sink_input in pulse.sink_input_list():
-            sink_inputs_list.append(SinkInputs(pulse, sink_input))
+    for sink_input in pulse.sink_input_list():
+        sink_inputs_list.append(SinkInput(pulse, sink_input))
 
     return sink_inputs_list
+
+
+class LinuxVolumeController:
+    master_volume: float
+    input_volume: float
+    input_sinks: list[SinkInput]
+
+    def __init__(self):
+        with pulsectl.Pulse('volume-increase') as pulse:
+            self.input_sinks = get_sink_inputs(pulse)
+
+

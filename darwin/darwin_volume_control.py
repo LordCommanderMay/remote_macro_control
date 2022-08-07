@@ -2,7 +2,9 @@ import osascript
 
 
 class DarwinVolumeController:
-    InputSinks = None
+    master_volume: float
+    input_volume: float
+    input_sinks = None
 
     def __init__(self):
         self.master_volume = osascript.run("output volume of(get volume settings)")[1]
