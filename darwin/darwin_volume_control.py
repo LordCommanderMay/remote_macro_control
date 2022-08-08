@@ -13,7 +13,7 @@ class DarwinVolumeController:
     def __init__(self):
         try:
             self.master_volume = float(osascript.run("output volume of(get volume settings)")[1])
-        except ValueError: # fixed bug that caused crash when macbook was using hdmi audio output
+        except ValueError:  # fixed bug that caused crash when macbook was using hdmi audio output
             self.master_volume = 0
         self.input_volume = float(osascript.run("input volume of (get volume settings)")[1])
         self.output_muted = osascript.run("output muted of (get volume settings)")[1] == 'true'
@@ -37,10 +37,5 @@ class DarwinVolumeController:
             self.master_volume = True
 
     def toggle_input_mute(self):
-        #mac os does not have a good way of doing this
+        # mac os does not have a good way of doing this
         raise NotImplementedError()
-
-
-
-
-
