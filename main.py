@@ -7,6 +7,7 @@ from base import Base
 
 import macro
 
+
 def main():
     sql_engine = create_engine("sqlite:///database.db", echo=True, future=True)
     Base.metadata.create_all(bind=sql_engine)
@@ -18,6 +19,8 @@ def main():
     socket.bind("tcp://*:5566")
     while True:
         macros = session.query(macro.Macro)
+        for x in macros:
+            print(x.macro_type)
         volume_controller = VolumeController()
         print(volume_controller.master_volume)
         message = socket.recv()
@@ -48,9 +51,6 @@ def main():
                         macro_.execute()
         session.commit()
         session.close()
-
-
-
 
 
 if __name__ == '__main__':
