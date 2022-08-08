@@ -11,7 +11,10 @@ class DarwinVolumeController:
     input_sinks = None
 
     def __init__(self):
-        self.master_volume = float(osascript.run("output volume of(get volume settings)")[1])
+        try:
+            self.master_volume = float(osascript.run("output volume of(get volume settings)")[1])
+        except ValueError:
+            self.master_volume = 0
         self.input_volume = float(osascript.run("input volume of (get volume settings)")[1])
         self.output_muted = osascript.run("output muted of (get volume settings)")[1] == 'true'
         self.input_muted = False  # may cause a bug needs to be tested
