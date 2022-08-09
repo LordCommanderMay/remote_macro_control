@@ -43,6 +43,9 @@ class VolumeController:
     def change_input_volume(self, volume: float):
         self.OSVolumeController.change_input_volume(volume)
 
+    def toggle_input_mute(self):
+        self.OSVolumeController.toggle_input_mute()
+
     def get_input_sinks(self):
         return self.OSVolumeController.input_sinks
 

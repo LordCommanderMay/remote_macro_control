@@ -35,7 +35,8 @@ def main():
                 volume_controller.change_master_volume(recv_data_packet['volume'])
             case 'toggle_master_mute':
                 volume_controller.toggle_master_mute()
-
+            case 'toggle_mic_mute':
+                volume_controller.toggle_input_mute()
             case "change_volume_input_sink":
                 for sink_input in VolumeController.get_input_sinks():
                     if sink_input.sink_id == recv_data_packet["sink_id"]:
