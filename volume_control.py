@@ -38,7 +38,7 @@ class VolumeController:
         self.OSVolumeController.change_master_volume(volume)
 
     def toggle_master_mute(self):
-        self.OSVolumeController.toggle_input_mute()
+        self.OSVolumeController.toggle_mute_master_volume()
 
     def change_input_volume(self, volume: float):
         self.OSVolumeController.change_input_volume(volume)
