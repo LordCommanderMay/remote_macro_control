@@ -95,6 +95,10 @@ class LinuxVolumeController:
         self.input_volume = float(self._sink.base_volume) * 100  # ^^^^
         self.input_muted = self._input.mute
 
+    def __del__(self):
+        self._pulse.close()
+
+
     def change_master_volume(self, volume: float):
         self._pulse.volume_set(self._sink, (volume / 100, volume / 100))
 
