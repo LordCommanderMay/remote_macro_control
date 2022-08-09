@@ -1,4 +1,7 @@
+import itertools
+
 import pulsectl
+
 
 class SinkInput:
     sink_id: int
@@ -9,15 +12,11 @@ class SinkInput:
     volume: float
     mute: bool
 
-    def __init__(self, pulse_pointer, sink_input: pulsectl.pulsectl.PulseSinkInputInfo):
-        def gen_id():
-            return_id: bytes = random.randbytes(4)
-            if return_id in ids:
-                gen_id()
-            else:
-                return return_id
+    id_iter = itertools.count()
 
-        self.id = gen_id()
+    def __init__(self, pulse_pointer, sink_input: pulsectl.pulsectl.PulseSinkInputInfo):
+
+        self.id = next(SinkInput.id_iter)
         self.pulse_pointer = pulse_pointer
         self.sink_input_obj = sink_input
         self.app_name = sink_input.proplist["application.name"]
@@ -68,7 +67,7 @@ def get_main_inputs():
     raise NotImplementedError
 
 
-def get_sink_inputs(pulse : pulsectl.Pulse) -> list[SinkInput]:
+def get_sink_inputs(pulse: pulsectl.Pulse) -> list[SinkInput]:
     sink_inputs_list: list[SinkInput] = []
     print(pulse.server_info().default_sink_name)
 
@@ -81,10 +80,34 @@ def get_sink_inputs(pulse : pulsectl.Pulse) -> list[SinkInput]:
 class LinuxVolumeController:
     master_volume: float
     input_volume: float
+    output_muted: bool
+    input_muted: bool
+    _sink: pulsectl.pulsectl.PulseSinkInfo
     input_sinks: list[SinkInput]
 
     def __init__(self):
-        with pulsectl.Pulse('volume-increase') as pulse:
-            self.input_sinks = get_sink_inputs(pulse)
+        self._pulse = pulsectl.Pulse('Remote Macro Control')
+        self.input_sinks = get_sink_inputs(self._pulse)
+        self._sink = self._pulse.get_sink_by_name(self._pulse.server_info().default_sink_name)
+        self._input = self._pulse.get_source_by_name(self._pulse.server_info().default_source_name)
+        self.output_muted = self._sink.mute
+        self.master_volume = float(self._sink.base_volume) * 100  # sink_volume is 0.0 - 1.0
+        self.input_volume = float(self._sink.base_volume) * 100  # ^^^^
 
+    def change_master_volume(self, volume: float):
+        self._pulse.volume_set(self._sink, (volume / 100, volume / 100))
 
+    def change_input_volume(self, volume: float):
+        self._pulse.source_volume_set(self, (volume / 100, volume / 100))
+
+    def toggle_mute_master_volume(self):
+        if self.output_muted:
+            self._pulse.mute(self._sink, False)
+        else:
+            self._pulse.mute(self._sink, True)
+
+    def toggle_input_mute(self):
+        if self.input_muted:
+            self._pulse.mute(self._input, False)
+        else:
+            self._pulse.mute(self._input, True)
