@@ -1,4 +1,4 @@
-import os, subprocess, runpy
+import json, subprocess, runpy, pyautogui
 from sqlalchemy import Column, Integer, String, Enum
 import keyboard
 from base import Base
@@ -19,24 +19,29 @@ class Macro(Base):
     macro_type = Column(Enum(MacroType))
     args = Column(String)
 
-    def __init__(self, name: str, icon: str, macro_type: enum.Enum, command: str):
+    def __init__(self, name: str, icon: str, macro_type: enum.Enum, args: str):
         self.name = name
         self.icon = icon
         self.macro_type = macro_type
-        self.args = command
+        self.args = args
 
     def execute(self):
         print(self.macro_type)
+        args: list[str] = json.loads(self.args)
+        print(args)
 
         match self.macro_type:
 
             case MacroType.TERMINAL_COMMAND:
-                os.system(self.args)
+                subprocess.run(args)
 
             case MacroType.KEYBOARD_SHORTCUT:
-                keyboard.press_and_release(self.args)
+                pyautogui.hotkey(*args)
 
             case MacroType.PYTHON_SCRIPT:
+                path_name = ''.join(args)
+                runpy.run_path(path_name)
+
 
 
 
