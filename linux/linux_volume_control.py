@@ -16,7 +16,7 @@ class SinkInput:
 
     def __init__(self, pulse_pointer, sink_input: pulsectl.pulsectl.PulseSinkInputInfo):
 
-        self.id = next(SinkInput.id_iter)
+        self.sink_id = next(SinkInput.id_iter)
         self.pulse_pointer = pulse_pointer
         self.sink_input_obj = sink_input
         self.app_name = sink_input.proplist["application.name"]
@@ -43,6 +43,7 @@ class SinkInput:
 
     def __dict__(self):
         return {
+            "sink_id": self.sink_id,
             "app_name": self.app_name,
             "icon_name": self.icon_name,
             "volume": self.volume,
