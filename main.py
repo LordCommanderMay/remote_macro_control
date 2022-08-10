@@ -21,22 +21,29 @@ def main():
         macros = session.query(macro.Macro)
         for x in macros:
             print(x.macro_type)
+
         volume_controller = VolumeController()
         print(volume_controller.master_volume)
+
         message = socket.recv()
         recv_data_packet = json.loads(message.decode("utf-8"))
         print(recv_data_packet["action"])
+
         match recv_data_packet["action"]:
             case 'send_data':
                 print(volume_controller.output_muted)
                 packet = volume_controller.get_volume_data_json()
                 socket.send(packet)
+
             case 'change_master_volume':
                 volume_controller.change_master_volume(recv_data_packet['volume'])
+
             case 'toggle_master_mute':
                 volume_controller.toggle_master_mute()
+
             case 'toggle_mic_mute':
                 volume_controller.toggle_input_mute()
+
             case "change_volume_input_sink":
                 for sink_input in VolumeController.get_input_sinks():
                     if sink_input.sink_id == recv_data_packet["sink_id"]:
@@ -46,10 +53,12 @@ def main():
                 for sink_input in VolumeController.get_input_sinks():
                     if sink_input.sink_id == recv_data_packet["sink_id"]:
                         sink_input.toggle_mute()
+
             case "run_macro":
                 for macro_ in macros:
                     if recv_data_packet["macro_id"] == macro_.macro_id:
                         macro_.execute()
+
         session.commit()
         session.close()
 
