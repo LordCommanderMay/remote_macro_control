@@ -39,8 +39,7 @@ class Macro(Base):
                 pyautogui.hotkey(*args)
 
             case MacroType.PYTHON_SCRIPT:
-                path_name = ''.join(args)
-                runpy.run_path(path_name)
+                runpy.run_path(args[0])
 
 
 
