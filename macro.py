@@ -1,4 +1,7 @@
 import json, subprocess, runpy, pyautogui
+import os
+import platform
+
 from sqlalchemy import Column, Integer, String, Enum
 import keyboard
 from base import Base
@@ -9,6 +12,9 @@ class MacroType(enum.Enum):
     TERMINAL_COMMAND = 1
     KEYBOARD_SHORTCUT = 2
     PYTHON_SCRIPT = 3
+    OPEN_WEBPAGE = 4
+    
+
 
 
 class Macro(Base):
@@ -40,6 +46,14 @@ class Macro(Base):
 
             case MacroType.PYTHON_SCRIPT:
                 runpy.run_path(args[0])
+
+            case MacroType.OPEN_WEBPAGE:
+                if platform.system() == 'Darwin':  # macOS
+                    subprocess.call(('open', args[0]))
+                elif platform.system() == 'Windows':  # Windows
+                    os.startfile(args[0])
+                elif platform.system() == 'Linux':
+                    subprocess.call(('xdg-open', args[0]))
 
 
 
