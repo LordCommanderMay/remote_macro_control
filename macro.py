@@ -13,6 +13,10 @@ class MacroType(enum.Enum):
     KEYBOARD_SHORTCUT = 2
     PYTHON_SCRIPT = 3
     OPEN_WEBPAGE = 4
+    RUN_PROGRAM = 5
+    RUN_STEAM_GAME = 6
+
+
     
 
 
@@ -54,6 +58,14 @@ class Macro(Base):
                     os.startfile(args[0])
                 elif platform.system() == 'Linux':
                     subprocess.call(('xdg-open', args[0]))
+
+            case MacroType.RUN_PROGRAM:
+                pass
+
+            case MacroType.RUN_STEAM_GAME:
+                game_id = args[0]
+                subprocess.call(f"steam steam//gameid/{game_id}")
+
 
 
 
