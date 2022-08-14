@@ -60,7 +60,7 @@ class Macro(Base):
                     subprocess.call(('xdg-open', args[0]))
 
             case MacroType.RUN_PROGRAM:
-                pass
+                subprocess.run(args)
 
             case MacroType.RUN_STEAM_GAME:
                 game_id = args[0]
