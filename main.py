@@ -33,7 +33,7 @@ def main():
             case 'send_data':
                 print(volume_controller.output_muted)
                 packet = volume_controller.get_volume_data_json()
-                socket.send(packet)
+                socket.send_string(packet)
 
             case 'change_master_volume':
                 volume_controller.change_master_volume(recv_data_packet['volume'])

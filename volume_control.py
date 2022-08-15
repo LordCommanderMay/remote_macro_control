@@ -67,7 +67,7 @@ class VolumeController:
                 for sink_input in self.get_input_sinks():
                     packet['data']['sink_inputs'].append(sink_input.to_dict())
 
-            return bytes(json.dumps(packet), 'utf-8')
+            return json.dumps(packet)
 
 
 
