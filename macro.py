@@ -1,7 +1,7 @@
 import json, subprocess, runpy, pyautogui
 import os
 import platform
-
+import webbrowser
 from sqlalchemy import Column, Integer, String, Enum
 import keyboard
 from base import Base
@@ -52,12 +52,8 @@ class Macro(Base):
                 runpy.run_path(args[0])
 
             case MacroType.OPEN_WEBPAGE:
-                if platform.system() == 'Darwin':  # macOS
-                    subprocess.call(('open', args[0]))
-                elif platform.system() == 'Windows':  # Windows
-                    os.startfile(args[0])
-                elif platform.system() == 'Linux':
-                    subprocess.call(('xdg-open', args[0]))
+                webbrowser.open(args[0])
+
 
             case MacroType.RUN_PROGRAM:
                 subprocess.run(args)
