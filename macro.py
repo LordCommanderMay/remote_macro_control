@@ -17,10 +17,6 @@ class MacroType(enum.Enum):
     RUN_STEAM_GAME = 6
 
 
-    
-
-
-
 class Macro(Base):
     __tablename__ = 'macros'
     macro_id = Column(Integer, primary_key=True)
@@ -54,18 +50,9 @@ class Macro(Base):
             case MacroType.OPEN_WEBPAGE:
                 webbrowser.open(args[0])
 
-
             case MacroType.RUN_PROGRAM:
                 subprocess.run(args)
 
             case MacroType.RUN_STEAM_GAME:
                 game_id = args[0]
                 subprocess.call(f"steam steam//gameid/{game_id}")
-
-
-
-
-
-
-
-
