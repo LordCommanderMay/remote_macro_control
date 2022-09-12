@@ -1,22 +1,37 @@
 import json
+import os
+
 import zmq
 from volume_control import VolumeController
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from base import Base
-
-import macro
-
+import socket as Socket
+import macro, logging, coloredlogs, socket
+from log import logger
 
 def main():
-    sql_engine = create_engine("sqlite:///database.db", echo=True, future=True)
+
+    # logger.debug("this is a debugging message")
+    # logger.info("this is an informational message")
+    # logger.warning("this is a warning message")
+    # logger.error("this is an error message")
+    # logger.critical("this is a critical message")
+
+    logger.info("Creating/Connect To Database...")
+    sql_engine = create_engine("sqlite:///database.db", echo=False, future=True)
     Base.metadata.create_all(bind=sql_engine)
     session = sessionmaker(bind=sql_engine)
     session = session()
+    logger.info("Success!")
 
+    logger.info(f"Starting ZMQ server on {Socket.gethostbyname(Socket.gethostname())}:5566")
     context = zmq.Context()
     socket = context.socket(zmq.PAIR)
     socket.bind("tcp://*:5566")
+    logger.info("Success!")
+
+
     while True:
         macros = session.query(macro.Macro)
         for x in macros:
