@@ -13,7 +13,8 @@ class VolumeController:
                 from darwin.darwin_volume_control import DarwinVolumeController
                 self.OSVolumeController = DarwinVolumeController()
             case "Windows":
-                raise NotImplementedError("Windows support has not been added yet")
+                from windows.windows_volume_control import WindowsVolumeController
+                self.OSVolumeController = WindowsVolumeController()
             case _:
                 raise OSError("OS not supported!")
 
