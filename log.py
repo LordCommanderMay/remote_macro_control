@@ -1,4 +1,4 @@
-import coloredlogs, logging, datetime, platform, os, socket
+import logging, datetime, platform, os, socket
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(message)s',
