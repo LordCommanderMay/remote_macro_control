@@ -7,16 +7,10 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from base import Base
 import socket as Socket
-import macro, logging, coloredlogs, socket
+import macro, socket
 from log import logger
 
 def main():
-
-    # logger.debug("this is a debugging message")
-    # logger.info("this is an informational message")
-    # logger.warning("this is a warning message")
-    # logger.error("this is an error message")
-    # logger.critical("this is a critical message")
 
     logger.info("Creating/Connect To Database...")
     sql_engine = create_engine("sqlite:///database.db", echo=False, future=True)
