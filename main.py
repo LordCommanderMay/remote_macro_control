@@ -53,14 +53,14 @@ def main():
             case 'toggle_mic_mute':
                 volume_controller.toggle_input_mute()
 
-            case "change_volume_input_sink":
-                for sink_input in VolumeController.get_input_sinks():
-                    if sink_input.sink_id == recv_data_packet["sink_id"]:
+            case "change_app_volume":
+                for sink_input in VolumeController.get_app_volume_controllers():
+                    if sink_input.app_id == recv_data_packet["sink_id"]:
                         sink_input.change_volume(recv_data_packet["volume"])
 
-            case "toggle_mute_input_sink":
-                for sink_input in VolumeController.get_input_sinks():
-                    if sink_input.sink_id == recv_data_packet["sink_id"]:
+            case "toggle_mute_app_mute":
+                for sink_input in VolumeController.get_app_volume_controllers():
+                    if sink_input.app_id == recv_data_packet["sink_id"]:
                         sink_input.toggle_mute()
 
             case "run_macro":
