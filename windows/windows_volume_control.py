@@ -1,6 +1,61 @@
+import itertools
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+from pycaw.utils import AudioSession
+
+
+
+class AppVolumeController:
+    app_id: int
+    app_name: str
+    _session: AudioSession
+    icon_name: str or None
+    volume: float
+    mute: bool
+    id_iter = itertools.count()
+
+
+
+
+    def __init__(self, session: AudioSession):
+
+
+        self.app_id = next(AppVolumeController.id_iter)
+        print("wee", session.DisplayName)
+        if session.DisplayName == "@%SystemRoot%\System32\AudioSrv.Dll,-202":
+            self.app_name = "System  Sounds"
+        else:
+            self.app_name = session.Process.name().replace(".exe", '')
+        self._volume_controller = session.SimpleAudioVolume
+        self._session = session
+        self.icon_name = "Not Yet Implemented"  # <---------------- FIx me
+        self.volume = self._volume_controller.GetMasterVolume()
+        self.mute = bool(self._volume_controller.GetMute())
+
+    def toggle_mute(self):
+        if self.mute:
+            self.pulse_pointer.mute(self.sink_input_obj, False)
+        else:
+            self.pulse_pointer.mute(self.sink_input_obj, True)
+
+    def __dict__(self):
+        return {
+            "app_id": self.app_id,
+            "app_name": self.app_name,
+            "icon_name": self.icon_name,
+            "volume": self.volume,
+            "muted": self.mute
+        }
+
+    def to_dict(self):
+        return self.__dict__()
+
+    def __str__(self):
+        return str(self.__dict__())
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class WindowsVolumeController:
@@ -8,6 +63,7 @@ class WindowsVolumeController:
     input_volume: float
     output_muted: bool
     input_muted: bool
+    app_controllers: list[AppVolumeController]
 
     def __init__(self):
 
@@ -25,6 +81,20 @@ class WindowsVolumeController:
         # input
         self.input_muted = bool(self.windows_microphone_controller.GetMute())
         self.input_volume = mic_db2percent.index(self.windows_microphone_controller.GetMasterVolumeLevel())
+
+        # apps
+        self.app_controllers = self.get_app_volume_controllers()
+
+
+    def get_app_volume_controllers(self) -> list[AppVolumeController]:
+        apps_volume_controller_list: list[AppVolumeController] = []
+        sessions = AudioUtilities.GetAllSessions()
+        for app in sessions:
+            apps_volume_controller_list.append(AppVolumeController(app))
+
+        #resets id counter
+        AppVolumeController.id_iter = itertools.count()
+        return apps_volume_controller_list
 
     def change_master_volume(self, volume: float):
         self.windows_speaker_controller.SetMasterVolume(speaker_percent2db[int(volume)])
