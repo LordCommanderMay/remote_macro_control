@@ -2,8 +2,9 @@ import itertools
 import pulsectl
 
 
-class SinkInput:
-    sink_id: int
+
+class AppVolumeController:
+    app_id: int
     pulse_pointer: pulsectl.Pulse
     sink_input_obj: pulsectl.pulsectl.PulseSinkInputInfo
     app_name: str
@@ -13,9 +14,11 @@ class SinkInput:
 
     id_iter = itertools.count()
 
+
+
     def __init__(self, pulse_pointer, sink_input: pulsectl.pulsectl.PulseSinkInputInfo):
 
-        self.sink_id = next(SinkInput.id_iter)
+        self.app_id = next(AppVolumeController.id_iter)
         self.pulse_pointer = pulse_pointer
         self.sink_input_obj = sink_input
         self.app_name = sink_input.proplist["application.name"]
@@ -42,7 +45,7 @@ class SinkInput:
 
     def __dict__(self):
         return {
-            "sink_id": self.sink_id,
+            "app_id": self.app_id,
             "app_name": self.app_name,
             "icon_name": self.icon_name,
             "volume": self.volume,
@@ -67,37 +70,39 @@ def get_main_inputs():
     raise NotImplementedError
 
 
-def get_sink_inputs(pulse: pulsectl.Pulse) -> list[SinkInput]:
-    sink_inputs_list: list[SinkInput] = []
-    print(pulse.server_info().default_sink_name)
-
-    for sink_input in pulse.sink_input_list():
-        sink_inputs_list.append(SinkInput(pulse, sink_input))
-
-    return sink_inputs_list
-
-
 class LinuxVolumeController:
     master_volume: float
     input_volume: float
     output_muted: bool
     input_muted: bool
     _sink: pulsectl.pulsectl.PulseSinkInfo
-    input_sinks: list[SinkInput]
+    app_controllers: list[AppVolumeController]
 
     def __init__(self):
         self._pulse = pulsectl.Pulse('Remote Macro Control')
-        self.input_sinks = get_sink_inputs(self._pulse)
+        self.app_controllers = self.get_app_volume_controllers()
         self._sink = self._pulse.get_sink_by_name(self._pulse.server_info().default_sink_name)
         self._input = self._pulse.get_source_by_name(self._pulse.server_info().default_source_name)
         self.output_muted = self._sink.mute
         self.master_volume = float(self._sink.base_volume) * 100  # sink_volume is 0.0 - 1.0
         self.input_volume = float(self._sink.base_volume) * 100  # ^^^^
         self.input_muted = self._input.mute
+        self.app_controllers = self.get_app_volume_controllers()
+
+    def get_app_volume_controllers(self) -> list[AppVolumeController]:
+        sink_inputs_list: list[AppVolumeController] = []
+        print(self._pulse.server_info().default_sink_name)
+
+        for sink_input in self._pulse.sink_input_list():
+            sink_inputs_list.append(AppVolumeController(self._pulse.sink_input))
+
+        # resets id counter
+        AppVolumeController.id_iter = itertools.count()
+
+        return sink_inputs_list
 
     def __del__(self):
         self._pulse.close()
-
 
     def change_master_volume(self, volume: float):
         self._pulse.volume_set(self._sink, (volume / 100, volume / 100))
