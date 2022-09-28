@@ -17,16 +17,21 @@ class MacroType(enum.Enum):
     RUN_STEAM_GAME = 6
 
 
+
 class Macro(Base):
     __tablename__ = 'macros'
     macro_id = Column(Integer, primary_key=True)
     name = Column(String)
+    desc = Column(String)
+    color = Column(String)
     icon = Column(String)
     macro_type = Column(Enum(MacroType))
     args = Column(String)
 
-    def __init__(self, name: str, icon: str, macro_type: enum.Enum, args: str):
+    def __init__(self, name:  str, desc: str, color : str, icon: str, macro_type: enum.Enum, args: str):
         self.name = name
+        self.desc = desc
+        self.color
         self.icon = icon
         self.macro_type = macro_type
         self.args = args
@@ -39,20 +44,20 @@ class Macro(Base):
         match self.macro_type:
 
             case MacroType.TERMINAL_COMMAND:
-                subprocess.run(args)
+                subprocess.Popen(args, shell=True)
 
             case MacroType.KEYBOARD_SHORTCUT:
                 pyautogui.hotkey(*args)
 
             case MacroType.PYTHON_SCRIPT:
-                runpy.run_path(args[0])
+                subprocess.Popen(['python', args[0]], shell=True)
 
             case MacroType.OPEN_WEBPAGE:
-                webbrowser.open(args[0])
+                pass  # web browswe doesnt work on windows it freezes program
 
             case MacroType.RUN_PROGRAM:
                 subprocess.run(args)
 
             case MacroType.RUN_STEAM_GAME:
                 game_id = args[0]
-                subprocess.call(f"steam steam//gameid/{game_id}")
+                subprocess.call(f"steam steam://rungameid/{game_id}", shell=True)
