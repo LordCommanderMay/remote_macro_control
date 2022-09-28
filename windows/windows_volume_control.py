@@ -22,7 +22,6 @@ class AppVolumeController:
 
 
         self.app_id = next(AppVolumeController.id_iter)
-        print("wee", session.DisplayName)
         if session.DisplayName == "@%SystemRoot%\System32\AudioSrv.Dll,-202":
             self.app_name = "System  Sounds"
         else:
@@ -80,6 +79,7 @@ class WindowsVolumeController:
 
         # input
         self.input_muted = bool(self.windows_microphone_controller.GetMute())
+
         self.input_volume = mic_db2percent.index(self.windows_microphone_controller.GetMasterVolumeLevel())
 
         # apps
@@ -97,7 +97,7 @@ class WindowsVolumeController:
         return apps_volume_controller_list
 
     def change_master_volume(self, volume: float):
-        self.windows_speaker_controller.SetMasterVolume(speaker_percent2db[int(volume)])
+        self.windows_speaker_controller.SetMasterVolumeLevel(speaker_percent2db[int(volume)], None)
 
     def change_input_volume(self, volume: float):
         pass
