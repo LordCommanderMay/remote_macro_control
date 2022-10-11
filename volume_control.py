@@ -54,10 +54,10 @@ class VolumeController:
         packet = {
             "action": 'sent_data',
             "data": {
-                "master_volume": self.master_volume,
+                "master_volume": float(self.master_volume),
                 "output_muted": self.output_muted,
-                "input_volume": self.input_volume,
-                "input_muteed": self.input_muted,
+                "input_volume": float(self.input_volume),
+                "input_muted": self.input_muted,
                 "app_controllers": []
 
             }
